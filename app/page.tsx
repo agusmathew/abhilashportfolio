@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useState } from "react";
+
 const skills = [
   "Manual testing",
   "Writing test cases",
@@ -73,6 +77,21 @@ const education = [
 ];
 
 export default function Home() {
+  const [isHireOpen, setIsHireOpen] = useState(false);
+  const [noOffset, setNoOffset] = useState({ x: 0, y: 0 });
+  const noContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const moveNoButton = () => {
+    const container = noContainerRef.current;
+    if (!container) return;
+    const bounds = container.getBoundingClientRect();
+    const maxX = Math.max(0, bounds.width - 110);
+    const maxY = Math.max(0, bounds.height - 48);
+    const nextX = Math.floor(Math.random() * (maxX + 1));
+    const nextY = Math.floor(Math.random() * (maxY + 1));
+    setNoOffset({ x: nextX, y: nextY });
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute left-[-120px] top-[-120px] h-[320px] w-[320px] rounded-full glow-orb" />
@@ -259,6 +278,46 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+        {isHireOpen && (
+          <div className="section-card w-[280px] rounded-2xl p-4 text-sm">
+            <p className="text-xs uppercase tracking-[0.2em] text-[color:var(--secondary)]">
+              Quick Question
+            </p>
+            <p className="mt-2 text-base font-semibold">Will you hire me?</p>
+            <div className="mt-4 flex flex-col gap-3">
+              <a
+                href="mailto:abhilashabi15@gmail.com?subject=QA%20Role%20Opportunity"
+                className="rounded-full bg-[color:var(--accent)] px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-[color:var(--accent-dark)]"
+              >
+                Yes, let’s talk
+              </a>
+              <div
+                ref={noContainerRef}
+                onMouseMove={moveNoButton}
+                onPointerMove={moveNoButton}
+                className="relative h-[56px] w-full overflow-hidden rounded-full border border-[color:var(--stroke)] bg-white"
+              >
+                <button
+                  onMouseEnter={moveNoButton}
+                  onFocus={moveNoButton}
+                  style={{ transform: `translate(${noOffset.x}px, ${noOffset.y}px)` }}
+                  className="absolute left-2 top-2 rounded-full border border-[color:var(--stroke)] bg-white px-4 py-2 text-sm font-semibold transition"
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        <button
+          onClick={() => setIsHireOpen((prev) => !prev)}
+          className="rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-black"
+        >
+          Will you hire me?
+        </button>
+      </div>
     </div>
   );
 }
