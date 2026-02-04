@@ -87,9 +87,11 @@ export default function Home() {
     const bounds = container.getBoundingClientRect();
     const maxX = Math.max(0, bounds.width - 110);
     const maxY = Math.max(0, bounds.height - 48);
-    const nextX = Math.floor(Math.random() * (maxX + 1));
-    const nextY = Math.floor(Math.random() * (maxY + 1));
-    setNoOffset({ x: nextX, y: nextY });
+    setNoOffset((prev) => {
+      const nextX = prev.x <= maxX / 2 ? maxX : 0;
+      const nextY = prev.y <= maxY / 2 ? maxY : 0;
+      return { x: nextX, y: nextY };
+    });
   };
 
   return (
